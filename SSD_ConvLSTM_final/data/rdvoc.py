@@ -26,14 +26,14 @@ else:
     import xml.etree.ElementTree as ET
 
 RDVOC_CLASSES = (  # always index 0
-    'target1', 'target2', 'target3')
+    'person')
 
 # RDVOC_ROOT = "/media/orange/D/HWP/datasets/RDVOC_2019/OTBseq_all/"
 # RDVOC_ROOT_test = "/media/orange/D/HWP/datasets/RDVOC_2019/OTBseq_all/"
-RDVOC_ROOT = '../VID'
-RDVOC_ROOT_test = '../VID'
+RDVOC_ROOT = '/home/felix/VID'
+RDVOC_ROOT_test = '/home/felix/VID'
 
-LABEL_PATH = '../VID/{}.json'
+LABEL_PATH = '/home/felix/VID/{}.json'
 
 sample_random = random.Random()
 
@@ -266,8 +266,8 @@ class SeqDataset(Dataset):
         else:
             self.pick = list(range(0, self.num))
 
-        self.txtpath = os.path.join(RDVOC_ROOT, 'ImageSets/Main')
-        self.ids = self._get_ids('test')
+        # self.txtpath = os.path.join(RDVOC_ROOT, 'ImageSets/Main')
+        # self.ids = self._get_ids('test')
 
 
     def __len__(self):
@@ -319,7 +319,7 @@ class SeqDataset(Dataset):
         frame = "{:06d}".format(frame)
         image_path = join(self.root, self.phase, video_name, "img/{}.jpg".format(frame))
         image_anno = self.labels[video_name]['gt_rect'][int(frame)] # (xmin, ymin, xmax, ymax)
-        image_anno = self._target_transform(image_anno, width=cfg['image_size'][0], height=cfg['image_size'][1])
+        image_anno = [self._target_transform(b, width=cfg['image_size'][0], height=cfg['image_size'][1]) for b in image_anno]
 
         return image_path, image_anno
 
@@ -331,7 +331,7 @@ class SeqDataset(Dataset):
         video = self.labels[video_name] # selected video's info
         frames = video['image_files']
         name = video['name']
-        cls = name.split('_')[1]
+        cls = name.split('_')[0]
         label = RDVOC_CLASSES.index(cls)
 
         if self.phase == 'train':
@@ -344,12 +344,12 @@ class SeqDataset(Dataset):
         imgs = []
         targets = []
         for frame in framenums:
-            img, bbox = self._get_image_anno(video_name, frame)
+            img, bboxes = self._get_image_anno(video_name, frame)
             imgs.append(img)
-            target = np.hstack((bbox, label))
-            # print('target:', target)
-            target = torch.from_numpy(target).float()
-            targets.append(target)
+            for bbox in bboxes:
+                target = np.hstack((bbox, label))
+                target = torch.from_numpy(target).float()
+                targets.append(target)
 
         # targets = np.hstack((bboxes, np.expand_dims(labels, axis=1)))
 

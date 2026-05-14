@@ -184,7 +184,7 @@ def add_extras(cfg, i, batch_norm=False):
 
 def add_convlstm(input_channels=512):
     layers = [ConvLSTM(input_channels=input_channels, hidden_channels=[128,32], kernel_size=3, step=5,
-                        effective_step=[4]).cuda()]
+                        effective_step=[4])]
 
     return layers
 

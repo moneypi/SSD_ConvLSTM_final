@@ -16,8 +16,8 @@ import numpy as np
 import argparse
 import matplotlib.pyplot as plt
 import datetime
-import visdom
-viz = visdom.Visdom()
+# import visdom
+# viz = visdom.Visdom()
 
 
 def str2bool(v):
@@ -26,7 +26,7 @@ def str2bool(v):
 
 parser = argparse.ArgumentParser(
     description='Single Shot MultiBox Detector Training With Pytorch')
-train_set = parser.add_mutually_exclusive_group()
+# train_set = parser.add_mutually_exclusive_group()
 parser.add_argument('--dataset', default='RDVOC', choices=['VOC', 'COCO', 'RDVOC'],
                     type=str, help='VOC or COCO or RDVOC')
 parser.add_argument('--dataset_root', default=RDVOC_ROOT,
