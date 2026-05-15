@@ -1,1 +1,2 @@
 Please download vgg16_reducedfc.pth from the SSD github repository!
+wget -c https://s3.amazonaws.com/amdegroot-models/vgg16_reducedfc.pth

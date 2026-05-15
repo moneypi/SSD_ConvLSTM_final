@@ -51,7 +51,7 @@ class SSD(nn.Module):
 
         if phase == 'test':
             self.softmax = nn.Softmax(dim=-1)
-            self.detect = Detect(num_classes, 0, 200, 0.01, 0.45)
+            self.detect = Detect.apply
 
     def L2Norm(self, x):
         norm = L2Norm(x.size(1), 20)
@@ -120,7 +120,8 @@ class SSD(nn.Module):
                 loc.view(loc.size(0), -1, 4),                   # loc preds
                 self.softmax(conf.view(conf.size(0), -1,
                              self.num_classes)),                # conf preds
-                self.priors.type(type(x.data))                  # default boxes
+                self.priors.type(type(x.data)),                 # default boxes
+                self.num_classes, 0, 200, 0.01, 0.45
             )
         else:
             output = (
